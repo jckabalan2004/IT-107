@@ -1,7 +1,6 @@
 <?php
 require_once 'config.php';
 
-// Create users table
 $sql = "CREATE TABLE IF NOT EXISTS users (
     id INT(11) AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -12,7 +11,6 @@ $sql = "CREATE TABLE IF NOT EXISTS users (
 
 $pdo->exec($sql);
 
-// Create contacts table
 $sql = "CREATE TABLE IF NOT EXISTS contacts (
     id INT(11) AUTO_INCREMENT PRIMARY KEY,
     user_id INT(11) NOT NULL,
@@ -26,4 +24,5 @@ $sql = "CREATE TABLE IF NOT EXISTS contacts (
 $pdo->exec($sql);
 
 echo "Database initialized successfully!";
+
 ?>
