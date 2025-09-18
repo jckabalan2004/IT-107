@@ -4,7 +4,7 @@ require_once 'config.php';
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Get JSON input
+
     $input = json_decode(file_get_contents('php://input'), true);
     
     if (!$input) {
@@ -16,7 +16,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($input['email']);
     $password = $input['password'];
     
-    // Validate input
     if (empty($name) || empty($email) || empty($password)) {
         echo json_encode(['success' => false, 'message' => 'All fields are required']);
         exit;
@@ -32,7 +31,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
     
-    // Check if user already exists
     try {
         $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
         $stmt->execute([$email]);
@@ -41,11 +39,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode(['success' => false, 'message' => 'User already exists']);
             exit;
         }
-        
-        // Hash password
+
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-        
-        // Insert user into database
+
         $stmt = $pdo->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
         
         if ($stmt->execute([$name, $email, $hashedPassword])) {
@@ -59,4 +55,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 } else {
     echo json_encode(['success' => false, 'message' => 'Invalid request method']);
 }
+
 ?>
