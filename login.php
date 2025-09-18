@@ -1,7 +1,6 @@
 <?php
 require_once 'config.php';
 
-// Start session
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -9,7 +8,7 @@ if (session_status() === PHP_SESSION_NONE) {
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Get JSON input
+
     $input = json_decode(file_get_contents('php://input'), true);
     
     if (!$input) {
@@ -19,21 +18,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     $email = trim($input['email']);
     $password = $input['password'];
-    
-    // Validate input
+
     if (empty($email) || empty($password)) {
         echo json_encode(['success' => false, 'message' => 'Email and password are required']);
         exit;
     }
-    
-    // Check if user exists
+
     try {
         $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
         $stmt->execute([$email]);
         $user = $stmt->fetch();
         
         if ($user && password_verify($password, $user['password'])) {
-            // Set session variables
+
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_name'] = $user['name'];
             $_SESSION['user_email'] = $user['email'];
@@ -52,4 +49,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 } else {
     echo json_encode(['success' => false, 'message' => 'Invalid request method']);
 }
+
 ?>
