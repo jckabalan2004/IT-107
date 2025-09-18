@@ -1,7 +1,6 @@
 <?php
 require_once 'config.php';
 
-// Start session
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -9,13 +8,12 @@ if (session_status() === PHP_SESSION_NONE) {
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Check if user is logged in
+
     if (!isset($_SESSION['user_id'])) {
         echo json_encode(['success' => false, 'message' => 'Not authenticated']);
         exit;
     }
-    
-    // Get JSON input
+
     $input = json_decode(file_get_contents('php://input'), true);
     
     if (!$input) {
@@ -27,15 +25,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($input['email']);
     $phone = isset($input['phone']) ? trim($input['phone']) : '';
     $user_id = $_SESSION['user_id'];
-    
-    // Validate input
+
     if (empty($name) || empty($email)) {
         echo json_encode(['success' => false, 'message' => 'Name and email are required']);
         exit;
     }
     
     try {
-        // Insert contact into database
+
         $stmt = $pdo->prepare("INSERT INTO contacts (user_id, name, email, phone) VALUES (?, ?, ?, ?)");
         
         if ($stmt->execute([$user_id, $name, $email, $phone])) {
@@ -49,4 +46,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 } else {
     echo json_encode(['success' => false, 'message' => 'Invalid request method']);
 }
+
 ?>
